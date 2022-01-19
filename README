@@ -1,0 +1,52 @@
+A pair of simple programs for sorta kinda demonstrating exfiltration of
+files via HTTP.
+
+EXFIL2
+------
+This program will do the exfiltration. Usage:
+        exfil2 -d dirname -h dst_host:dst_port [-s sleep_interval]
+where:
+dirname is a directory the contents of which will be (recursively) uploaded.
+
+dst_host: The host to which to send the files. Can be either a hostname
+        or an IP address.
+
+dst_port: The TCP port to which to connect.
+
+sleep_interval: How many seconds to sleep between sending files. This is
+        to intentionally slow things down so an interview candidate will
+        have time to find the program and see what it is doing. Default
+        is 5 seconds, but experience has shown that to be insufficient.
+        10 seconds is a better choice, depending upon how many files are
+        in directory being uploaded.
+
+BUILDING
+You should just be able to type:
+
+        make
+
+NOTE: on Linux systems this program makes use of setproctitle so you can't
+see the arguments passed to it in the "ps" command. That is provided in
+the included libbsd.a archive library. Setproctitle is not provided by
+MacOS anymore. There are some open source implementations available, but
+since this interview question is aimed at Linux I didn't bother.
+
+BUGS
+I don't know of any at the moment, other than the fact that I wrote this
+in "C". I have no explanation for why I did that.
+
+UPLOAD_SERVER
+-------------
+A simple golang program to receive the data uploaded by exfil2. It receives
+the files and stores them to disk. There really isn't any reason why it
+needs to actually write them to disk. Mostly that was done so I could
+verify that the files were uploaded correctlyi.
+
+Usage:
+        upload_server [-p portnum]
+If no port number is specified, 8080 is the default.
+
+BUILDING
+
+You should just be able to type:
+        go build upload_server.go
